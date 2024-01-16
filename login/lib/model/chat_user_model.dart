@@ -15,15 +15,15 @@ class ChatUser {
     required this.Name,
     required this.CreatedAt,
   });
-  late final bool IsOnline;
-  late final String Email;
-  late final String Id;
-  late final String LastActive;
-  late final String Image;
-  late final String PushToken;
-  late final String About;
-  late final String Name;
-  late final String CreatedAt;
+  late bool IsOnline;
+  late String Email;
+  late String Id;
+  late String LastActive;
+  late String Image;
+  late String PushToken;
+  late String About;
+  late String Name;
+  late String CreatedAt;
 
   ChatUser.fromJson(Map<String, dynamic> json) {
     IsOnline = json['Is_Online'] ?? '';
