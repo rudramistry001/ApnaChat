@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "165377489826",
+    "project_id": "apnachat-c0e5b",
+    "storage_bucket": "apnachat-c0e5b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165377489826:android:0316baddcce8b37bf450fb",
+        "android_client_info": {
+          "package_name": "com.example.login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165377489826-hc1efgke62ajd764bfchktol2ti094lg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.login",
+            "certificate_hash": "d9abd9963b094571e76d1f437b98dcd505aaee3e"
+          }
+        },
+        {
+          "client_id": "165377489826-qrbq95crp8e9d79hn138k1ibgrclghk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQNUC_njTQlDPHdBzdGxQbG678_UcMZNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165377489826-qrbq95crp8e9d79hn138k1ibgrclghk0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "165377489826-u46roe6n4pr5eop4gdjrbvieniorcr52.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.login"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
