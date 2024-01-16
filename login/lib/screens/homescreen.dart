@@ -15,7 +15,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<ChatUser> list = [];
+  List<ChatUser> _list = [];
+  final List<ChatUser> _searchlist = [];
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -27,10 +29,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          StringConstants.title,
-          textAlign: TextAlign.center,
-        ),
+        title: _isSearching
+            ? const TextField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Name or Email....",
+                ),
+              )
+            : const Text(
+                StringConstants.title,
+                textAlign: TextAlign.center,
+              ),
         backgroundColor: Colors.lightBlue,
         leading: const Icon(
           CupertinoIcons.home,
@@ -38,11 +47,14 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.search,
-                color: Colors.white,
-              )),
+              onPressed: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                });
+              },
+              icon: Icon(_isSearching
+                  ? CupertinoIcons.clear_circled_solid
+                  : Icons.search)),
           IconButton(
               onPressed: () {
                 Navigator.push(
@@ -83,17 +95,17 @@ class _HomePageState extends State<HomePage> {
             case ConnectionState.active:
             case ConnectionState.done:
               final data = snapshot.data?.docs;
-              list =
+              _list =
                   data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
 
-              if (list.isNotEmpty) {
+              if (_list.isNotEmpty) {
                 return ListView.builder(
-                  itemCount: list.length, // Use the length of the list
+                  itemCount: _list.length, // Use the length of the list
                   padding: EdgeInsets.only(top: mq.height * .01),
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     //return Text('Name: ${list[index]}');
-                    return ChatUserCard(user: list[index]);
+                    return ChatUserCard(user: _list[index]);
                   },
                 );
               } else {

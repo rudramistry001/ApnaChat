@@ -43,6 +43,7 @@ dependencies:
   cached_network_image: ^3.3.0
   carousel_slider: ^4.2.1
   flutter_svg: ^2.0.9
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:

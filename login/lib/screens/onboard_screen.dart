@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:login/auth/loginscreen.dart';
 import 'package:login/auth/signuppage.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({Key? key});
@@ -73,6 +74,24 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
               ),
             ),
           ),
+          AnimatedSmoothIndicator(
+            activeIndex: _currentPage,
+            count: 3,
+            effect: SwapEffect(
+              radius: 10,
+              dotWidth: 10,
+              dotHeight: 10,
+              activeDotColor: Colors.blueAccent,
+              dotColor: Colors.lightBlueAccent.withOpacity(0.17),
+            ),
+            onDotClicked: (index) {
+              _carouselController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.ease,
+              );
+            },
+          ),
           // Buttons at the bottom
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -136,19 +155,24 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       // Set button size
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.grey,
+                      backgroundColor: Colors.white,
                       minimumSize: const Size(120, 50),
-
-                      // Set button border
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            10.0), // Adjust the border radius as needed
-                        side: const BorderSide(
-                            color: Colors.blue), // Set border color
-                      ),
                     ),
-                    child: const Text("Skip"),
+                    child: const Row(
+                      children: [
+                        Text(
+                          "Skip",
+                          style: TextStyle(color: Colors.blueAccent),
+                        ),
+                        SizedBox(width: 8.0), // Adjust the spacing as needed
+                        Icon(
+                          Icons.arrow_forward,
+                          color: Colors.blueAccent,
+                          size: 20.0, // Adjust the size as needed
+                        ),
+                      ],
+                    ),
                   ),
                 if (_currentPage < 2)
                   ElevatedButton(
