@@ -4,7 +4,8 @@ import 'package:login/api/apis.dart';
 import 'package:login/constants/strings.dart';
 import 'package:login/main.dart';
 import 'package:login/model/chat_user_model.dart';
-import 'package:login/screens/profile_screen.dart';
+
+import 'package:login/screens/setttings.dart';
 import 'package:login/widgets/chat_user_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -57,12 +58,19 @@ class _HomePageState extends State<HomePage> {
                   : Icons.search)),
           IconButton(
               onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => ProfileScreen(
+                //       user: APIs.me,
+                //     ),
+                //   ),
+                // );
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProfileScreen(
-                      user: APIs.me,
-                    ),
+                    builder: (context) => const SettingsScreen(),
                   ),
                 );
               },
