@@ -1,6 +1,11 @@
+// ignore_for_file: avoid_print
+
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:login/api/apis.dart';
 import 'package:login/auth/loginscreen.dart';
 import 'package:login/constants/strings.dart';
@@ -18,10 +23,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String? _image;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -96,26 +101,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     Stack(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(mq.height * .3),
-                          child: CachedNetworkImage(
-                            width: mq.height * .3,
-                            height: mq.height * .3,
-                            imageUrl: widget.user.Image,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const CircleAvatar(
-                              child: Icon(CupertinoIcons.person),
-                            ),
-                          ),
-                        ),
+                        //profile picture
+                        _image != null
+                            ?
+
+                            //local image
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(mq.height * .1),
+                                child: Image.file(File(_image!),
+                                    width: mq.height * .2,
+                                    height: mq.height * .2,
+                                    fit: BoxFit.cover))
+                            :
+
+                            //image from server
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(mq.height * .1),
+                                child: CachedNetworkImage(
+                                  width: mq.height * .2,
+                                  height: mq.height * .2,
+                                  fit: BoxFit.cover,
+                                  imageUrl: widget.user.Image,
+                                  errorWidget: (context, url, error) =>
+                                      const CircleAvatar(
+                                          child: Icon(CupertinoIcons.person)),
+                                ),
+                              ),
+                        // edit image button
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: MaterialButton(
                             elevation: 1,
-                            onPressed: () {},
+                            onPressed: () {
+                              _showBottomSheet();
+                            },
                             color: Colors.white,
                             shape: const CircleBorder(),
                             child: const Icon(
@@ -194,5 +216,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           )),
     );
+  }
+
+  void _showBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            padding:
+                EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .05),
+            children: [
+              //pick profile picture label
+              const Text('Pick Profile Picture',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+
+              //for adding some space
+              SizedBox(height: mq.height * .02),
+
+              //buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //pick from gallery button
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: const CircleBorder(),
+                      fixedSize: Size(mq.width * .3, mq.height * .15),
+                    ),
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      // Pick an image
+                      try {
+                        final XFile? image = await picker.pickImage(
+                          source: ImageSource.gallery,
+                          // imageQuality: 80,
+                        );
+
+                        if (image != null) {
+                          print('Image Path: ${image.path}');
+                          setState(() {
+                            _image = image.path;
+                          });
+                        }
+                      } catch (e) {
+                        print('Error picking image: $e');
+                      }
+                      APIs.updateProfilePicture(File(_image!));
+                      //for hiding bottom sheet after image selection
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset('assets/images/images.png'),
+                  ),
+
+                  //take picture from camera button
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          fixedSize: Size(mq.width * .3, mq.height * .15)),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+
+                        // Pick an image
+                        try {
+                          final XFile? photo = await picker.pickImage(
+                              source: ImageSource.camera);
+
+                          if (photo != null) {
+                            setState(() {
+                              _image = photo.path;
+                            });
+                          }
+                        } catch (e) {
+                          print('Error picking image: $e');
+                        }
+                        APIs.updateProfilePicture(File(_image!));
+                        //for hiding bottom sheet after image selection
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      },
+                      child: Image.asset('assets/images/camera.png')),
+                ],
+              )
+            ],
+          );
+        });
   }
 }
