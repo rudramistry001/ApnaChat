@@ -1,0 +1,23 @@
+
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "apnachat-c0e5b",
+                    "appId": "1:165377489826:android:0316baddcce8b37bf450fb",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "apnachat-c0e5b",
+                    "configurations": {
+                        "android": "1:165377489826:android:0316baddcce8b37bf450fb",
+                        "ios": "1:165377489826:ios:43ee4a97fb88c00ef450fb"
+                    }
+                }
+            }
+        }
+    }
+}

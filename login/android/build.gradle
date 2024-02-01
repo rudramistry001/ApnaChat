@@ -6,6 +6,9 @@ buildscript {
     }
 
     dependencies {
+        //START FLUTTER FIRE CONFIGURATION
+        classpath 'com.google.gms:google-services:4.3.15'
+        //End flutter fire configuration
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
