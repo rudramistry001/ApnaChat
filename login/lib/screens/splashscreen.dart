@@ -4,7 +4,6 @@ import 'package:login/api/apis.dart';
 import 'package:login/auth/loginscreen.dart';
 import 'package:login/main.dart';
 import 'package:login/screens/homescreen.dart';
-import 'package:login/screens/onboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
           statusBarColor: Colors.white));
 
       if (APIs.auth.currentUser != null) {
+        // ignore: avoid_print
         print('\nUser: ${APIs.auth.currentUser}');
         //navigate to home screen
         Navigator.pushReplacement(

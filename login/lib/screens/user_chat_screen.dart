@@ -1,12 +1,15 @@
+// ignore_for_file: avoid_print
+
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login/api/apis.dart';
 import 'package:login/main.dart';
 import 'package:login/model/chat_user_model.dart';
-import 'package:login/screens/profile_screen.dart';
+import 'package:login/model/messages.dart';
+import 'package:login/screens/view_profile_screen.dart';
+import 'package:login/widgets/message_card.dart';
 
 class UserChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -17,6 +20,10 @@ class UserChatScreen extends StatefulWidget {
 }
 
 class _UserChatScreenState extends State<UserChatScreen> {
+  //for storing all messages
+  List<Message> _list = [];
+//for handling message text controlling
+  final _textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,7 +35,8 @@ class _UserChatScreenState extends State<UserChatScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ProfileScreen(user: APIs.me)),
+                      builder: (context) =>
+                          ViewProfileScreen(user: widget.user)),
                 );
               },
               child: Row(
@@ -73,7 +81,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
           children: [
             Expanded(
               child: StreamBuilder(
-                stream: APIs.getAllUsers(),
+                stream: APIs.getAllMessages(widget.user),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     // if data s loading
@@ -86,20 +94,22 @@ class _UserChatScreenState extends State<UserChatScreen> {
                     //if some or all data is loaded then show it
                     case ConnectionState.active:
                     case ConnectionState.done:
-                      // final data = snapshot.data?.docs;
-                      // _list = data
-                      //         ?.map((e) => ChatUser.fromJson(e.data()))
-                      //         .toList() ??
-                      //     [];
+                      final data = snapshot.data?.docs;
 
-                      final _list = ['hii', 'hello'];
+                      _list = data
+                              ?.map((e) => Message.fromJson(e.data()))
+                              .toList() ??
+                          [];
+
                       if (_list.isNotEmpty) {
                         return ListView.builder(
                           itemCount: _list.length, // Use the length of the list
                           padding: EdgeInsets.only(top: mq.height * .01),
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return Text('Message: ${_list[index]}');
+                            return MessageCard(
+                              message: _list[index],
+                            );
                           },
                         );
                       } else {
@@ -142,6 +152,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
                   ),
                   Expanded(
                     child: TextField(
+                      controller: _textController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       decoration: InputDecoration(
@@ -168,7 +179,13 @@ class _UserChatScreenState extends State<UserChatScreen> {
             //send message button
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              if (_textController.text.isNotEmpty) {
+                //simply send message
+                APIs.sendMessage(widget.user, _textController.text);
+                _textController.clear();
+              }
+            },
             minWidth: 1,
             padding: EdgeInsets.only(
                 top: 5.sp, bottom: 5.sp, right: 5.sp, left: 5.sp),
