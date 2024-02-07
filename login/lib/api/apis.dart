@@ -57,7 +57,12 @@ class APIs {
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
-    return firestore.collection('Users').snapshots();
+    return firestore
+        .collection('Users')
+        .where('Id',
+            isNotEqualTo: user.uid) //because empty list throws an error
+        // .where('id', isNotEqualTo: user.uid)
+        .snapshots();
   }
 
   // for updating user information
@@ -92,4 +97,12 @@ class APIs {
         .doc(user.uid)
         .update({'image': me.Image});
   }
+
+  // CHAT SCREEN RELATED APIS
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
+      ChatUser user) {
+    return firestore.collection('messages').snapshots();
+  }
+
+  static getUserInfo(ChatUser user) {}
 }
