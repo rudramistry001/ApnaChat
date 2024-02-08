@@ -4,6 +4,7 @@ import 'package:login/api/apis.dart';
 import 'package:login/auth/loginscreen.dart';
 import 'package:login/main.dart';
 import 'package:login/screens/homescreen.dart';
+import 'package:login/screens/onboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -32,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         //navigate to login screen
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const LoginPage()));
+            context, MaterialPageRoute(builder: (_) => const OnBoardScreen()));
       }
     });
   }

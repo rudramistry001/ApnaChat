@@ -112,7 +112,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: Image.file(File(_image!),
                                     width: mq.height * .2,
                                     height: mq.height * .2,
-                                    fit: BoxFit.cover))
+                                    fit: BoxFit.cover),
+                              )
                             :
 
                             //image from server
@@ -129,6 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           child: Icon(CupertinoIcons.person)),
                                 ),
                               ),
+
                         // edit image button
                         Positioned(
                           bottom: 0,

@@ -70,9 +70,9 @@ class APIs {
 
   // for updating user information
   static Future<void> updateUserInfo() async {
-    await firestore.collection('users').doc(user.uid).update({
-      'name': me.Name,
-      'about': me.About,
+    await firestore.collection('Users').doc(user.uid).update({
+      'Name': me.Name,
+      'About': me.About,
     });
   }
 
@@ -81,13 +81,15 @@ class APIs {
     //getting image file extension
     final ext = file.path.split('.').last;
     print('Extension: $ext');
+    print("object------------------");
+    print(me.Image);
 
     //storage file ref with path
     final ref = storage.ref().child('profile_pictures/${user.uid}.$ext');
 
     //uploading image
     await ref
-        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .putFile(file, SettableMetadata(contentType: 'Image/$ext'))
         .then((p0) {
       print('Data Transferred: ${p0.bytesTransferred / 1000} kb');
     });
@@ -95,9 +97,9 @@ class APIs {
     //updating image in firestore database
     me.Image = await ref.getDownloadURL();
     await firestore
-        .collection('users')
+        .collection('Users')
         .doc(user.uid)
-        .update({'image': me.Image});
+        .update({'Image': me.Image});
   }
 
   ///************** Chat Screen Related APIs **************
@@ -145,5 +147,15 @@ class APIs {
         .collection('chats/${getConversationID(message.fromId)}/messages/')
         .doc(message.sent)
         .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+
+  //get only last message of a specific chat
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      ChatUser user) {
+    return firestore
+        .collection('chats/${getConversationID(user.Id)}/messages/')
+        .orderBy('sent', descending: true)
+        .limit(1)
+        .snapshots();
   }
 }
