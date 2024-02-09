@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login/dialogs/my_date_util.dart';
+import 'package:login/dialogs/profile_dialog.dart';
 import 'package:login/main.dart';
 import 'package:login/model/chat_user_model.dart';
 import 'package:login/model/messages.dart';
@@ -53,7 +54,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                   onTap: () {
                     showDialog(
                         context: context,
-                        builder: (_) => ProfileScreen(user: widget.user));
+                        builder: (_) => ProfileDialog(user: widget.user));
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(mq.height * .03),
