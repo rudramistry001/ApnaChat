@@ -68,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                       print('Email: ${emailController.text}');
                       print('Password: ${passwordController.text}');
                       _signIn();
+                      APIs.updateActiveStatus(true);
                     },
                     child: const Text('Login'),
                   ),

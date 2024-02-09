@@ -59,6 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: Colors.lightBlue,
               onPressed: () async {
                 Dialogs.showProgressBar(context);
+                await APIs.updateActiveStatus(false);
                 await APIs.auth.signOut().then((value) async {
                   Navigator.pop(context);
                   Navigator.pop(context);
