@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:login/api/apis.dart';
-import 'package:login/auth/loginscreen.dart';
 import 'package:login/main.dart';
 import 'package:login/screens/homescreen.dart';
 import 'package:login/screens/onboard_screen.dart';

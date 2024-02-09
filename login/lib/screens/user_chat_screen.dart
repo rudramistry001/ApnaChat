@@ -1,9 +1,12 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:login/api/apis.dart';
 import 'package:login/main.dart';
 import 'package:login/model/chat_user_model.dart';
@@ -20,6 +23,28 @@ class UserChatScreen extends StatefulWidget {
 }
 
 class _UserChatScreenState extends State<UserChatScreen> {
+  List<Message> _newList = [];
+  bool _isUploading = false;
+  @override
+  void initState() {
+    super.initState();
+    // Scroll to the bottom when the screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
+  }
+
+  //for scrolling down to end of chat by default
+  final ScrollController _scrollController = ScrollController();
+  // After adding a new item to the list, scroll to the bottom
+  _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 30),
+      curve: Curves.easeOut,
+    );
+  }
+
   //for storing all messages
   List<Message> _list = [];
 //for handling message text controlling
@@ -96,14 +121,19 @@ class _UserChatScreenState extends State<UserChatScreen> {
                     case ConnectionState.done:
                       final data = snapshot.data?.docs;
 
-                      _list = data
+                      _newList = data
                               ?.map((e) => Message.fromJson(e.data()))
                               .toList() ??
                           [];
 
+                      var _list = _newList.reversed.toList();
+
                       if (_list.isNotEmpty) {
                         return ListView.builder(
-                          itemCount: _list.length, // Use the length of the list
+                          reverse: true,
+                          controller:
+                              _scrollController, // Assign the ScrollController
+                          itemCount: _list.length,
                           padding: EdgeInsets.only(top: mq.height * .01),
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
@@ -165,35 +195,57 @@ class _UserChatScreenState extends State<UserChatScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.image, color: Colors.blueAccent),
-                  ),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+
+                        // Picking multiple images
+                        final List<XFile> images =
+                            await picker.pickMultiImage(imageQuality: 70);
+
+                        // uploading & sending image one by one
+                        for (var i in images) {
+                          print('Image Path: ${i.path}');
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatImage(widget.user, File(i.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
+                      icon: const Icon(Icons.image,
+                          color: Colors.blueAccent, size: 26)),
+                  //take image from camera button
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.camera_enhance_outlined,
-                        color: Colors.blueAccent),
-                  ),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+
+                        // Pick an image
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 70);
+                        if (image != null) {
+                          print('Image Path: ${image.path}');
+                          setState(() => _isUploading = true);
+
+                          await APIs.sendChatImage(
+                              widget.user, File(image.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
+                      icon: const Icon(Icons.camera_alt_rounded,
+                          color: Colors.blueAccent, size: 26)),
                 ],
               ),
             ),
             //send message button
           ),
-          MaterialButton(
-            onPressed: () {
-              if (_textController.text.isNotEmpty) {
-                //simply send message
-                APIs.sendMessage(widget.user, _textController.text);
-                _textController.clear();
-              }
-            },
-            minWidth: 1,
-            padding: EdgeInsets.only(
-                top: 5.sp, bottom: 5.sp, right: 5.sp, left: 5.sp),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            color: Colors.blueAccent,
-            child: IconButton(onPressed: () {}, icon: const Icon(Icons.send)),
-          ),
+          IconButton(
+              onPressed: () {
+                if (_textController.text.isNotEmpty) {
+                  //simply send message
+                  APIs.sendMessage(
+                      widget.user, _textController.text, Type.text);
+                  _textController.clear();
+                }
+              },
+              icon: const Icon(Icons.send)),
         ],
       ),
     );
