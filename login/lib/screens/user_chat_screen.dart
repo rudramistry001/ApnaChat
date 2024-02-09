@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:login/api/apis.dart';
+import 'package:login/dialogs/my_date_util.dart';
 import 'package:login/main.dart';
 import 'package:login/model/chat_user_model.dart';
 import 'package:login/model/messages.dart';
@@ -54,54 +55,61 @@ class _UserChatScreenState extends State<UserChatScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ViewProfileScreen(user: widget.user)),
-                );
-              },
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back, color: Colors.black54),
-                  ),
-                  10.horizontalSpace,
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(mq.height * .03),
-                    child: CachedNetworkImage(
-                      width: mq.height * .05,
-                      height: mq.height * .05,
-                      imageUrl: widget.user.Image,
-                      errorWidget: (context, url, error) => const CircleAvatar(
-                          child: Icon(CupertinoIcons.person)),
-                    ),
-                  ),
-                  10.horizontalSpace,
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.user.Name,
-                        style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w400),
-                      ),
-                      Text(
-                        "last seen not avaiable till now",
-                        style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w400),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            )),
+          automaticallyImplyLeading: false,
+          flexibleSpace: _appBar(),
+        ),
+
         backgroundColor: const Color.fromARGB(255, 234, 248, 255),
+
+        // AppBar(
+        //     automaticallyImplyLeading: false,
+        //     title: InkWell(
+        //       onTap: () {
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //               builder: (context) =>
+        //                   ViewProfileScreen(user: widget.user)),
+        //         );
+        //       },
+        //       child: Row(
+        //         children: [
+        //           IconButton(
+        //             onPressed: () => Navigator.pop(context),
+        //             icon: const Icon(Icons.arrow_back, color: Colors.black54),
+        //           ),
+        //           10.horizontalSpace,
+        //           ClipRRect(
+        //             borderRadius: BorderRadius.circular(mq.height * .03),
+        //             child: CachedNetworkImage(
+        //               width: mq.height * .05,
+        //               height: mq.height * .05,
+        //               imageUrl: widget.user.Image,
+        //               errorWidget: (context, url, error) => const CircleAvatar(
+        //                   child: Icon(CupertinoIcons.person)),
+        //             ),
+        //           ),
+        //           10.horizontalSpace,
+        //           Column(
+        //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //             crossAxisAlignment: CrossAxisAlignment.start,
+        //             children: [
+        //               Text(
+        //                 widget.user.Name,
+        //                 style: TextStyle(
+        //                     fontSize: 16.sp, fontWeight: FontWeight.w400),
+        //               ),
+        //               Text(
+        //                 "last seen not avaiable till now",
+        //                 style: TextStyle(
+        //                     fontSize: 16.sp, fontWeight: FontWeight.w400),
+        //               ),
+        //             ],
+        //           )
+        //         ],
+        //       ),
+        //     )),
+        // backgroundColor: const Color.fromARGB(255, 234, 248, 255),
         body: Column(
           children: [
             Expanded(
@@ -249,5 +257,80 @@ class _UserChatScreenState extends State<UserChatScreen> {
         ],
       ),
     );
+  }
+
+  // app bar widget
+  Widget _appBar() {
+    return InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => ViewProfileScreen(user: widget.user)));
+        },
+        child: StreamBuilder(
+            stream: APIs.getUserInfo(widget.user),
+            builder: (context, snapshot) {
+              final data = snapshot.data?.docs;
+              final list =
+                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+
+              return Row(
+                children: [
+                  //back button
+                  IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon:
+                          const Icon(Icons.arrow_back, color: Colors.black54)),
+
+                  //user profile picture
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: CachedNetworkImage(
+                      width: mq.height * .05,
+                      height: mq.height * .05,
+                      imageUrl:
+                          list.isNotEmpty ? list[0].Image : widget.user.Image,
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
+                    ),
+                  ),
+
+                  //for adding some space
+                  const SizedBox(width: 10),
+
+                  //user name & last seen time
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //user name
+                      Text(list.isNotEmpty ? list[0].Name : widget.user.Name,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500)),
+
+                      //for adding some space
+                      const SizedBox(height: 2),
+
+                      //last seen time of user
+                      Text(
+                          list.isNotEmpty
+                              ? list[0].IsOnline
+                                  ? 'Online'
+                                  : MyDateUtil.getLastActiveTime(
+                                      context: context,
+                                      lastActive: list[0].LastActive)
+                              : MyDateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: widget.user.LastActive),
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.black54)),
+                    ],
+                  )
+                ],
+              );
+            }));
   }
 }
