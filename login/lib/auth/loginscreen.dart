@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login/api/apis.dart';
 import 'package:login/auth/firebase_auth_servies.dart';
 import 'package:login/auth/signuppage.dart';
@@ -33,28 +34,75 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login Page'),
-      ),
-      body: Padding(
+          body: Stack(
+        children: [
+          
+          // Background Image
+          Center(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                decoration:const  BoxDecoration(
+                  //gradient: LinearGradient(colors: Colors.white ),
+                  gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                                Color.fromRGBO(0, 248, 248, 1),
+                                
+                                Color.fromRGBO(0, 57, 89, 1),
+                                 
+              ],
+            ),
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/login_frame.png"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+ Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text("Login",style: TextStyle(
+                color: Colors.white,
+                fontSize: 30.sp,
+                fontWeight: FontWeight.w600,
+              ),
+              ),
+            ),
+            20.verticalSpace,
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
+              decoration:  InputDecoration(
                 labelText: 'Email',
+                labelStyle: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 16.0),
+            15.verticalSpace,
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration:  InputDecoration(
                 labelText: 'Password',
+                
+                labelStyle: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -63,15 +111,19 @@ class _LoginPageState extends State<LoginPage> {
                 ? const CircularProgressIndicator(
                     color: Colors.black,
                   )
-                : ElevatedButton(
-                    onPressed: () {
-                      print('Email: ${emailController.text}');
-                      print('Password: ${passwordController.text}');
-                      _signIn();
-                      APIs.updateActiveStatus(true);
-                    },
-                    child: const Text('Login'),
-                  ),
+                : ElevatedButton.icon(
+  icon: const Icon(Icons.login, color: Colors.blue),
+  onPressed: () {
+    print('Email: ${emailController.text}');
+    print('Password: ${passwordController.text}');
+    _signIn();
+    APIs.updateActiveStatus(true);
+  },
+  label: Text("Login",style: TextStyle(color: Colors.blue, fontSize: 20.sp, ),),
+  style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // Change the color here
+  ),
+),
             InkWell(
               onTap: () {
                 //
@@ -104,7 +156,8 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-    );
+   
+    ]),);
   }
 
   void _signIn() async {
