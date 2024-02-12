@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login/api/apis.dart';
 import 'package:login/auth/firebase_auth_servies.dart';
 import 'package:login/auth/signuppage.dart';
+import 'package:login/main.dart';
 import 'package:login/screens/homescreen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -34,130 +35,168 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          body: Stack(
-        children: [
-          
-          // Background Image
-          Center(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                decoration:const  BoxDecoration(
-                  //gradient: LinearGradient(colors: Colors.white ),
-                  gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                                Color.fromRGBO(0, 248, 248, 1),
-                                
-                                Color.fromRGBO(0, 57, 89, 1),
-                                 
-              ],
-            ),
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/login_frame.png"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Center(
+          child: Column(
+            children: [
+              Text(
+                "Login",
+                style: TextStyle(
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
               ),
-            ),
+              Text(
+                "Enter Email Password to continue",
+                style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white),
+              ),
+            ],
           ),
- Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text("Login",style: TextStyle(
-                color: Colors.white,
-                fontSize: 30.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              ),
-            ),
-            20.verticalSpace,
-            TextField(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration:  InputDecoration(
-                labelText: 'Email',
-                labelStyle: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.white,
-                ),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            15.verticalSpace,
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration:  InputDecoration(
-                labelText: 'Password',
-                
-                labelStyle: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.white,
-                ),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 32.0),
-            isSignIn
-                ? const CircularProgressIndicator(
-                    color: Colors.black,
-                  )
-                : ElevatedButton.icon(
-  icon: const Icon(Icons.login, color: Colors.blue),
-  onPressed: () {
-    print('Email: ${emailController.text}');
-    print('Password: ${passwordController.text}');
-    _signIn();
-    APIs.updateActiveStatus(true);
-  },
-  label: Text("Login",style: TextStyle(color: Colors.blue, fontSize: 20.sp, ),),
-  style: ButtonStyle(
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // Change the color here
-  ),
-),
-            InkWell(
-              onTap: () {
-                //
-              },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.account_circle),
-                  Text("Sign in with Google "),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              children: [
-                const Text("New User?"),
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpPage()),
-                      );
-                    },
-                    child: const Text("Sign up"))
-              ],
-            ),
-          ],
         ),
       ),
-   
-    ]),);
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: const BoxDecoration(
+          //gradient: LinearGradient(colors: Colors.white ),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromRGBO(0, 248, 248, 1),
+              Color.fromRGBO(0, 57, 89, 1),
+            ],
+          ),
+        ),
+        child: Stack(children: [
+          //for showing the robot background image
+          Align(
+            alignment: Alignment.topCenter,
+            child: Image.asset("assets/images/login_frame.png"),
+          ),
+          Positioned(
+              bottom: 0,
+              child: Column(
+                children: [
+                  20.verticalSpace,
+                  SizedBox(
+                    width: mq.width * 1,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              20.verticalSpace,
+                              TextField(
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                style: const TextStyle(
+                                  color:
+                                      Colors.white, // Change text color to blue
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  labelStyle: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                  ),
+                                  border: const OutlineInputBorder(),
+                                ),
+                              ),
+                              15.verticalSpace,
+                              TextField(
+                                controller: passwordController,
+                                obscureText: true,
+                                style: const TextStyle(
+                                  color:
+                                      Colors.white, // Change text color to blue
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                  ),
+                                  border: const OutlineInputBorder(),
+                                ),
+                              ),
+                              const SizedBox(height: 32.0),
+                              isSignIn
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.black,
+                                    )
+                                  : ElevatedButton.icon(
+                                      icon: const Icon(Icons.login,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        print('Email: ${emailController.text}');
+                                        print(
+                                            'Password: ${passwordController.text}');
+                                        _signIn();
+                                        APIs.updateActiveStatus(true);
+                                      },
+                                      label: Text(
+                                        "Login",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20.sp,
+                                        ),
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.blueAccent),
+                                        // Change the color here
+                                      ),
+                                    ),
+                              InkWell(
+                                onTap: () {
+                                  //
+                                },
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.account_circle),
+                                    Text("Sign in with Google "),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                children: [
+                                  const Text("New User?"),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const SignUpPage()),
+                                        );
+                                      },
+                                      child: const Text("Sign up"))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )),
+        ]),
+      ),
+    );
   }
 
   void _signIn() async {

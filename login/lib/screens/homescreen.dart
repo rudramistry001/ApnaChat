@@ -7,6 +7,7 @@ import 'package:login/model/chat_user_model.dart';
 import 'package:login/screens/contact_list.dart';
 import 'package:login/screens/profile_screen.dart';
 import 'package:login/widgets/chat_user_card.dart';
+import 'package:login/widgets/custom_bottom_navighationbat.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,6 +17,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   List<ChatUser> _list = [];
   final List<ChatUser> _searchlist = [];
   bool _isSearching = false;
@@ -127,6 +136,9 @@ class _HomePageState extends State<HomePage> {
               }
           }
         },
+      ),
+      bottomNavigationBar: CustomBottomTabBar(
+        onTabSelected: _onTabSelected,
       ),
     );
   }

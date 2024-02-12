@@ -134,19 +134,19 @@ class _UserChatScreenState extends State<UserChatScreen> {
                               .toList() ??
                           [];
 
-                      var _list = _newList.reversed.toList();
+                      var list = _newList.reversed.toList();
 
-                      if (_list.isNotEmpty) {
+                      if (list.isNotEmpty) {
                         return ListView.builder(
                           reverse: true,
                           controller:
                               _scrollController, // Assign the ScrollController
-                          itemCount: _list.length,
+                          itemCount: list.length,
                           padding: EdgeInsets.only(top: mq.height * .01),
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
                             return MessageCard(
-                              message: _list[index],
+                              message: list[index],
                             );
                           },
                         );
