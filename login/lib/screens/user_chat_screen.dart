@@ -47,7 +47,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
   }
 
   //for storing all messages
-  List<Message> _list = [];
+  List<Message> list = [];
 //for handling message text controlling
   final _textController = TextEditingController();
   @override
@@ -57,9 +57,8 @@ class _UserChatScreenState extends State<UserChatScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           flexibleSpace: _appBar(),
+          backgroundColor: const Color.fromRGBO(0, 163, 255, 1),
         ),
-
-        backgroundColor: const Color.fromARGB(255, 234, 248, 255),
 
         // AppBar(
         //     automaticallyImplyLeading: false,
@@ -110,62 +109,75 @@ class _UserChatScreenState extends State<UserChatScreen> {
         //       ),
         //     )),
         // backgroundColor: const Color.fromARGB(255, 234, 248, 255),
-        body: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder(
-                stream: APIs.getAllMessages(widget.user),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    // if data s loading
-                    case ConnectionState.waiting:
-                    case ConnectionState.none:
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-
-                    //if some or all data is loaded then show it
-                    case ConnectionState.active:
-                    case ConnectionState.done:
-                      final data = snapshot.data?.docs;
-
-                      _newList = data
-                              ?.map((e) => Message.fromJson(e.data()))
-                              .toList() ??
-                          [];
-
-                      var list = _newList.reversed.toList();
-
-                      if (list.isNotEmpty) {
-                        return ListView.builder(
-                          reverse: true,
-                          controller:
-                              _scrollController, // Assign the ScrollController
-                          itemCount: list.length,
-                          padding: EdgeInsets.only(top: mq.height * .01),
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return MessageCard(
-                              message: list[index],
-                            );
-                          },
-                        );
-                      } else {
-                        return Center(
-                          child: Text(
-                            "Say Hii 👋",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20.sp, fontWeight: FontWeight.w400),
-                          ),
-                        );
-                      }
-                  }
-                },
-              ),
+        body: Container(
+          decoration: const BoxDecoration(
+            //gradient: LinearGradient(colors: Colors.white ),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.fromRGBO(0, 248, 248, 1),
+                Color.fromRGBO(0, 57, 89, 1),
+              ],
             ),
-            _chatInput(),
-          ],
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder(
+                  stream: APIs.getAllMessages(widget.user),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      // if data s loading
+                      case ConnectionState.waiting:
+                      case ConnectionState.none:
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+
+                      //if some or all data is loaded then show it
+                      case ConnectionState.active:
+                      case ConnectionState.done:
+                        final data = snapshot.data?.docs;
+
+                        _newList = data
+                                ?.map((e) => Message.fromJson(e.data()))
+                                .toList() ??
+                            [];
+
+                        var list = _newList.reversed.toList();
+
+                        if (list.isNotEmpty) {
+                          return ListView.builder(
+                            reverse: true,
+                            controller:
+                                _scrollController, // Assign the ScrollController
+                            itemCount: list.length,
+                            padding: EdgeInsets.only(top: mq.height * .01),
+                            physics: const BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return MessageCard(
+                                message: list[index],
+                              );
+                            },
+                          );
+                        } else {
+                          return Center(
+                            child: Text(
+                              "Say Hii 👋",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20.sp, fontWeight: FontWeight.w400),
+                            ),
+                          );
+                        }
+                    }
+                  },
+                ),
+              ),
+              _chatInput(),
+            ],
+          ),
         ),
       ),
     );

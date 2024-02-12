@@ -7,7 +7,7 @@ import 'package:login/model/chat_user_model.dart';
 import 'package:login/screens/contact_list.dart';
 import 'package:login/screens/profile_screen.dart';
 import 'package:login/widgets/chat_user_card.dart';
-import 'package:login/widgets/custom_bottom_navighationbat.dart';
+import 'package:login/widgets/custom_bottom_navighationbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: const Color.fromRGBO(0, 163, 255, 1),
         onPressed: () {
           Navigator.push(
             context,
@@ -97,45 +97,59 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
       ),
-      body: StreamBuilder(
-        stream: APIs.getAllUsers(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            // if data s loading
-            case ConnectionState.waiting:
-            case ConnectionState.none:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-
-            //if some or all data is loaded then show it
-            case ConnectionState.active:
-            case ConnectionState.done:
-              final data = snapshot.data?.docs;
-              _list =
-                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
-
-              if (_list.isNotEmpty) {
-                return ListView.builder(
-                  itemCount: _list.length, // Use the length of the list
-                  padding: EdgeInsets.only(top: mq.height * .01),
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    //return Text('Name: ${list[index]}');
-                    return ChatUserCard(user: _list[index]);
-                  },
-                );
-              } else {
+      body: Container(
+        decoration: const BoxDecoration(
+          //gradient: LinearGradient(colors: Colors.white ),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromRGBO(0, 248, 248, 1),
+              Color.fromRGBO(0, 57, 89, 1),
+            ],
+          ),
+        ),
+        child: StreamBuilder(
+          stream: APIs.getAllUsers(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              // if data s loading
+              case ConnectionState.waiting:
+              case ConnectionState.none:
                 return const Center(
-                  child: Text(
-                    "No Connections Found...",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  child: CircularProgressIndicator(),
                 );
-              }
-          }
-        },
+
+              //if some or all data is loaded then show it
+              case ConnectionState.active:
+              case ConnectionState.done:
+                final data = snapshot.data?.docs;
+                _list =
+                    data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
+                        [];
+
+                if (_list.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount: _list.length, // Use the length of the list
+                    padding: EdgeInsets.only(top: mq.height * .01),
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      //return Text('Name: ${list[index]}');
+                      return ChatUserCard(user: _list[index]);
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: Text(
+                      "No Connections Found...",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  );
+                }
+            }
+          },
+        ),
       ),
       bottomNavigationBar: CustomBottomTabBar(
         onTabSelected: _onTabSelected,

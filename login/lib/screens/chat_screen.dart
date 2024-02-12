@@ -3,7 +3,6 @@ import 'package:chat_bubbles/bubbles/bubble_normal.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:login/model/ai_message_model.dart';
-import 'package:login/model/messages.dart';
 
 class AIChatScreen extends StatefulWidget {
   const AIChatScreen({super.key});

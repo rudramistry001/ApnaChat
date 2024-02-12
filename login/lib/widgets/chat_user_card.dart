@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login/dialogs/my_date_util.dart';
 import 'package:login/dialogs/profile_dialog.dart';
 import 'package:login/main.dart';
 import 'package:login/model/chat_user_model.dart';
 import 'package:login/model/messages.dart';
-import 'package:login/screens/profile_screen.dart';
 import 'package:login/screens/user_chat_screen.dart';
 
 import '../api/apis.dart';
@@ -29,7 +29,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: mq.width * .04, vertical: 4),
-      // color: Colors.blue.shade100,
+      color: Colors.black,
       elevation: 0.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: InkWell(
@@ -69,16 +69,27 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 ),
 
                 //user name
-                title: Text(widget.user.Name),
+                title: Text(
+                  widget.user.Name,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400),
+                ),
 
                 //last message
                 subtitle: Text(
-                    _message != null
-                        ? _message!.type == Type.image
-                            ? 'image'
-                            : _message!.msg
-                        : widget.user.About,
-                    maxLines: 1),
+                  _message != null
+                      ? _message!.type == Type.image
+                          ? 'image'
+                          : _message!.msg
+                      : widget.user.About,
+                  maxLines: 1,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w200),
+                ),
 
                 //last message time
                 trailing: _message == null
@@ -99,7 +110,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                         Text(
                             MyDateUtil.getLastMessageTime(
                                 context: context, time: _message!.sent),
-                            style: const TextStyle(color: Colors.black54),
+                            style: const TextStyle(color: Colors.white),
                           ),
               );
             },

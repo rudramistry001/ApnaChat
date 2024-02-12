@@ -17,7 +17,7 @@ class ProfileDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
-      backgroundColor: Colors.white.withOpacity(.9),
+      backgroundColor: const Color.fromRGBO(0, 163, 255, 1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -35,10 +35,10 @@ class ProfileDialog extends StatelessWidget {
                     child: Text(
                       user.Name,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white),
                     ),
                   ),
 
@@ -60,7 +60,7 @@ class ProfileDialog extends StatelessWidget {
                     padding: const EdgeInsets.all(0),
                     shape: const CircleBorder(),
                     child: const Icon(Icons.info_outline,
-                        color: Colors.blue, size: 30),
+                        color: Colors.white, size: 30),
                   ),
                 ],
               ),
