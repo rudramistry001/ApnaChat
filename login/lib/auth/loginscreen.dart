@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                                         print(
                                             'Password: ${passwordController.text}');
                                         _signIn();
-                                        APIs.updateActiveStatus(true);
+                                        
                                       },
                                       label: Text(
                                         "Login",

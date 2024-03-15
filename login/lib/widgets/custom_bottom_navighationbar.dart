@@ -54,46 +54,32 @@ class _CustomBottomTabBarState extends State<CustomBottomTabBar> {
           ),
         ),
         padding: EdgeInsets.only(left: 5.sp, right: 5.sp, bottom: 10.sp),
-        child: Container(
-          height: 100.sp,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0.sp),
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromRGBO(0, 163, 255, 1),
-                Color.fromRGBO(0, 163, 255, 1),
-              ],
+        child: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.chat,
+              ),
+              label: 'Chat',
             ),
-          ),
-          child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.chat,
-                ),
-                label: 'Chat',
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.chat,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.chat,
-                ),
-                label: 'AI',
+              label: 'AI',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.settings,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.settings,
-                ),
-                label: 'Settings',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.white,
-            onTap: _onItemTapped,
-            backgroundColor: Colors.transparent,
-            unselectedItemColor: Colors.grey,
-          ),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.white,
+          onTap: _onItemTapped,
+          backgroundColor: Colors.transparent,
+          unselectedItemColor: Colors.grey,
         ),
       ),
     );

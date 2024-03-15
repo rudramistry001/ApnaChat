@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,14 +11,26 @@ import 'firebase_options.dart';
 // global object for accessing device screen size
 late Size mq;
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  _initialiseFirebase();
+  await _initialiseFirebase();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+  @override
+  void initState() {
+    super.initState();
+    fMessaging.requestPermission();
+  }
 
   // This widget is the root of your application.
   @override
