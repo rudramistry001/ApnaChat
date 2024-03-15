@@ -2,6 +2,7 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login/auth/loginscreen.dart';
 import 'package:login/auth/signuppage.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -94,7 +95,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
           ),
           // Buttons at the bottom
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0.sp),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -116,7 +117,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       // Set button border
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
-                            10.0), // Adjust the border radius as needed
+                            10.0.sp), // Adjust the border radius as needed
                         side: const BorderSide(
                             color: Colors.blue), // Set border color
                       ),
@@ -149,29 +150,32 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     child: const Text("Sign Up"),
                   ),
                 if (_currentPage < 2)
-                  ElevatedButton(
-                    onPressed: () {
-                      _carouselController.jumpToPage(2);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      // Set button size
-                      foregroundColor: Colors.grey,
-                      backgroundColor: Colors.white,
-                      minimumSize: const Size(120, 50),
-                    ),
-                    child: const Row(
-                      children: [
-                        Text(
-                          "Skip",
-                          style: TextStyle(color: Colors.blueAccent),
-                        ),
-                        SizedBox(width: 8.0), // Adjust the spacing as needed
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.blueAccent,
-                          size: 20.0, // Adjust the size as needed
-                        ),
-                      ],
+                  Padding(
+                    padding: EdgeInsets.all(16.0.sp),
+                    child: InkWell(
+                      onTap: () {
+                        _carouselController.jumpToPage(2);
+                      },
+                      // style: ElevatedButton.styleFrom(
+                      //   // Set button size
+                      //   foregroundColor: Colors.grey,
+                      //   backgroundColor: Colors.white,
+                      //   minimumSize: const Size(120, 50),
+                      // ),
+                      child: const Row(
+                        children: [
+                          Text(
+                            "Skip",
+                            style: TextStyle(color: Colors.blueAccent),
+                          ),
+                          SizedBox(width: 8.0), // Adjust the spacing as needed
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.blueAccent,
+                            size: 20.0, // Adjust the size as needed
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 if (_currentPage < 2)

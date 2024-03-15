@@ -1,10 +1,13 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart';
 import 'package:login/model/chat_user_model.dart';
 import 'package:login/model/messages.dart';
 
@@ -23,6 +26,58 @@ class APIs {
 //for returning current user
   static User get user => auth.currentUser!;
 
+  // for accessing firebase messaging (Push Notification)
+  static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+
+  // for getting firebase messaging token
+  static Future<void> getFirebaseMessagingToken() async {
+    await fMessaging.getToken().then((t) {
+      if (t != null) {
+        me.PushToken = t;
+        print('Push Token: $t');
+      }
+    });
+
+    // for handling foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+  }
+
+  // for sending push notification
+  static Future<void> sendPushNotification(
+      ChatUser chatUser, String msg) async {
+    try {
+      final body = {
+        "to": chatUser.PushToken,
+        "notification": {
+          "title": me.Name, //our name should be send
+          "body": msg,
+        },
+        // "data": {
+        //   "some_data": "User ID: ${me.id}",
+        // },
+      };
+
+      var res = await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.authorizationHeader:
+                'key=AAAAJoFEO6I:APA91bElgw77iGQYJdEov_3ea5i3j6_vpjpPm7q4D4xahUmOPny_4W9g3Vus_FgrldMScGNcd7qn46lko8wTYsX-yZQsJhRrKaj5T_NV3TkJ8vLkMIxxkSKLuz2mwbNelOCo-t7ma-3N'
+          },
+          body: jsonEncode(body));
+      print('Response status: ${res.statusCode}');
+      print('Response body: ${res.body}');
+    } catch (e) {
+      print('\nsendPushNotificationE: $e');
+    }
+  }
+
   //for checking if user exists or not??
   static Future<bool> userExists() async {
     return (await firestore.collection('Users').doc(user.uid).get()).exists;
@@ -33,6 +88,9 @@ class APIs {
     await firestore.collection('Users').doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
+        await getFirebaseMessagingToken();
+
+        APIs.updateActiveStatus(true);
       } else {
         await createUser().then((value) => getSelfInfo());
       }
@@ -119,6 +177,27 @@ class APIs {
         .snapshots();
   }
 
+  // // for sending message
+  // static Future<void> sendMessage(
+  //     ChatUser chatUser, String msg, Type type) async {
+  //   //message sending time (also used as id)
+  //   final time = DateTime.now().millisecondsSinceEpoch.toString();
+
+  //   //message to send
+  //   final Message message = Message(
+  //       toId: chatUser.Id,
+  //       msg: msg,
+  //       read: '',
+  //       type: type,
+  //       fromId: user.uid,
+  //       sent: time);
+
+  //   final ref = firestore
+  //       .collection('chats/${getConversationID(chatUser.Id)}/messages/');
+  //   await ref.doc(time).set(message.toJson()).then((value) =>
+  //       sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
+  // }
+
   // for sending message
   static Future<void> sendMessage(
     ChatUser chatUser,
@@ -139,7 +218,8 @@ class APIs {
 
     final ref = firestore
         .collection('chats/${getConversationID(chatUser.Id)}/messages/');
-    await ref.doc(time).set(message.toJson());
+    await ref.doc(time).set(message.toJson()).then((value) =>
+    sendPushNotification(chatUser, type == Type.text ? msg : 'image'));;
   }
 
   //update read status of message
